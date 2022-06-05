@@ -11,6 +11,7 @@ string TreeApplication::BuildTree()
 	int n;
 	cin >> name1;
 	this->SetName(name1);
+	state = 1;
 	while (cin >> name1 && name1 != "endtree")
 	{
 		TreeObject* parent = this->GetObjectByPath(name1);
@@ -29,27 +30,22 @@ string TreeApplication::BuildTree()
 		case 2:
 			child = new Class2(parent, name2);
 			child->state = 1;
-			child->classNum = 2;
 			break;
 		case 3:
 			child = new Class3(parent, name2);
 			child->state = 1;
-			child->classNum = 3;
 			break;
 		case 4:
 			child = new Class4(parent, name2);
 			child->state = 1;
-			child->classNum = 4;
 			break;
 		case 5:
 			child = new Class5(parent, name2);
 			child->state = 1;
-			child->classNum = 5;
 			break;
 		case 6:
 			child = new Class6(parent, name2);
 			child->state = 1;
-			child->classNum = 6;
 			break;
 		}
 	}
@@ -164,14 +160,14 @@ TYPE_HANDLER TreeApplication::GetHandler(TreeObject* target)
 }
 
 
-void TreeApplication::ConnectTreeObject(TreeObject* from, TreeObject* to)
+void TreeApplication::ConnectTreeObjects(TreeObject* from, TreeObject* to)
 {
 	TYPE_SIGNAL signal_d = GetSignal(from);
 	TYPE_HANDLER handler_d = GetHandler(to);
 	from->SetConnection(signal_d, to, handler_d);
 }
 
-void TreeApplication::DisconnectTreeObject(TreeObject* from, TreeObject* to)
+void TreeApplication::DisconnectTreeObjects(TreeObject* from, TreeObject* to)
 {
 	TYPE_SIGNAL signal_d = GetSignal(from);
 	TYPE_HANDLER handler_d = GetHandler(to);
@@ -202,7 +198,7 @@ void TreeApplication::ConnectionLoop()
 			cout << endl << "Handler object " << path2 << " not found";
 			continue;
 		}
-		ConnectTreeObject(object1, object2);
+		ConnectTreeObjects(object1, object2);
 	}
 }
 
@@ -227,8 +223,7 @@ void TreeApplication::SignalLoop()
 		}
 		if (command == "EMIT")
 		{
-			TYPE_SIGNAL signal_d;
-			signal_d = GetSignal(object);
+			TYPE_SIGNAL signal_d = GetSignal(object);
 			object->EmitSignal(signal_d, message);
 		}
 		else if (command == "DELETE_CONNECT")
@@ -239,7 +234,7 @@ void TreeApplication::SignalLoop()
 				cout << endl << "Handler object " << message << " not found";
 				continue;
 			}
-			DisconnectTreeObject(object, object2);
+			DisconnectTreeObjects(object, object2);
 		}
 		else if (command == "SET_CONDITION")
 			object->SetState(std::stoi(message));
@@ -251,7 +246,7 @@ void TreeApplication::SignalLoop()
 				cout << endl << "Handler object " << message << " not found";
 				continue;
 			}
-			ConnectTreeObject(object, object2);
+			ConnectTreeObjects(object, object2);
 		}
 	}
 }
@@ -273,11 +268,10 @@ int TreeApplication::Exec(bool error)
 
 void TreeApplication::Handler_1(string message)
 {
-	if (IsReady())
-		cout << endl << "Signal to " << GetAbsolutePath() << " Text:  " << message;
+	cout << endl << "Signal to " << GetAbsolutePath() << " Text:  " << message;
 }
 
 void TreeApplication::Signal_1(string& message)
 {
-	message += " (class: 1)";
+	message += " (class: " + std::to_string(classNum) + ")";
 }

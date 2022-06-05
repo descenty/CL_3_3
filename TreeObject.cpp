@@ -135,18 +135,16 @@ void TreeObject::PrintTreeWithStates(string space)
 
 void TreeObject::SetConnection(TYPE_SIGNAL signal, TreeObject* object, TYPE_HANDLER handler)
 {
-	for (unsigned int i = 0; i < connections.size(); i++)
-	{
-		if (connections[i].signal == signal && connections[i].object == object && connections[i].handler == handler)
+	for (auto conn : connections)
+		if (conn.signal == signal && conn.object == object && conn.handler == handler)
 			return;
-	}
 	connections.push_back(Connection{ signal, object, handler });
 }
 
 void TreeObject::DeleteConnection(TYPE_SIGNAL signal, TreeObject* object, TYPE_HANDLER handler)
 {
 	for (int i = 0; i < connections.size(); i++)
-		if (connections[i].object == object && connections[i].handler == handler && connections[i].signal == signal)
+		if (connections[i].signal == signal && connections[i].object == object && connections[i].handler == handler)
 		{
 			connections.erase(connections.begin() + i);
 			break;

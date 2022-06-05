@@ -22,20 +22,19 @@ typedef void (TreeObject::* TYPE_HANDLER)(string);
 
 #define SIGNAL_D(signal_f) (TYPE_SIGNAL) (&signal_f)
 #define HANDLER_D(handler_f) (TYPE_HANDLER) (&handler_f)
+struct Connection
+{
+	TYPE_SIGNAL signal;
+	TreeObject* object;
+	TYPE_HANDLER handler;
+};
 
 class TreeObject
 {
-protected:
-	struct Connection
-	{
-		TYPE_SIGNAL signal;
-		TreeObject* object;
-		TYPE_HANDLER handler;
-	};
 private:
 	string name = "";
 	TreeObject* parent = nullptr;
-	vector <TreeObject*> children;
+	vector<TreeObject*> children;
 	vector<Connection> connections;
 public:
 	int state = 0;
@@ -44,11 +43,8 @@ public:
 	TreeObject(TreeObject* parent = nullptr);
 
 	string GetName();
-
 	void SetName(string newName);
-
 	void SetParent(TreeObject* newParent);
-
 
 	TreeObject* GetRoot();
 	TreeObject* GetObjectByName(string name, bool withNested);

@@ -5,15 +5,9 @@
 class Class2 : public TreeObject
 {
 public:
-	using TreeObject::TreeObject;
-	void Signal_2(string& message)
-	{
-		message += " (class: 2)";
-	}
-	void Handler_2(string message)
-	{
-		cout << endl << "Signal to " << GetAbsolutePath() << " Text:  " << message;
-	}
+	Class2(TreeObject* parent, string name) : TreeObject(parent, name) { classNum = 2; };
+	void Signal_2(string& message) { message += " (class: " + std::to_string(classNum) + ")"; }
+	void Handler_2(string message) { cout << endl << "Signal to " << GetAbsolutePath() << " Text:  " << message; }
 };
 
 #endif
